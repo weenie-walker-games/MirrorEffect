@@ -211,16 +211,16 @@ namespace WeenieWalker
                     returnDirection = "_D";
                     break;
                 case "_UR":
-                    returnDirection = "_UL";
-                    break;
-                case "_UL":
-                    returnDirection = "_UR";
-                    break;
-                case "_DR":
                     returnDirection = "_DL";
                     break;
-                case "_DL":
+                case "_UL":
                     returnDirection = "_DR";
+                    break;
+                case "_DR":
+                    returnDirection = "_UL";
+                    break;
+                case "_DL":
+                    returnDirection = "_UR";
                     break;
 
 
