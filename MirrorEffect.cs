@@ -115,7 +115,14 @@ namespace WeenieWalker
             string returnString = "";
 
             CharState currentState = originalCharacter.charState;
+            Speech currentSpeech = originalCharacter.GetCurrentSpeech();
 
+            if(currentSpeech != null)
+            {
+                returnString = originalCharacter.talkAnimSprite;
+                return returnString;
+            }
+  
             switch (currentState)
             {
                 case CharState.Idle:
@@ -128,6 +135,7 @@ namespace WeenieWalker
                     returnString = originalCharacter.walkAnimSprite;
                     break;
                 default:
+
                     break;
             }
 
