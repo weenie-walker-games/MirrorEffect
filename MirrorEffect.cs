@@ -127,7 +127,7 @@ namespace WeenieWalker
         }
 
         /// <summary>
-        /// Provided by Chris using the Unity Sprites Custom
+        /// Provided by Chris using the Unity Sprites Custom / Not used in current implementation!
         /// </summary>
         /// <param name="direction"></param>
         /// <returns></returns>
@@ -161,6 +161,7 @@ namespace WeenieWalker
                     return 4;
 
                 default:
+                    
                     return direction;
             }
         }
@@ -211,16 +212,16 @@ namespace WeenieWalker
                     returnDirection = "_D";
                     break;
                 case "_UR":
-                    returnDirection = "_UL";
-                    break;
-                case "_UL":
-                    returnDirection = "_UR";
-                    break;
-                case "_DR":
                     returnDirection = "_DL";
                     break;
-                case "_DL":
+                case "_UL":
                     returnDirection = "_DR";
+                    break;
+                case "_DR":
+                    returnDirection = "_UL";
+                    break;
+                case "_DL":
+                    returnDirection = "_UR";
                     break;
 
 
