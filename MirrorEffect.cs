@@ -105,67 +105,10 @@ namespace WeenieWalker
 
                 mirrorRenderer.transform.position = playerPos;
 
-
-                /*Provided by Chris using Unity Sprites Custom but was not working properly
-                
-                // Position
-                mirrorCharacter.Teleport(originalCharacter.transform.position + (Vector3)positionOffset);
-
-                // Move speed
-                float moveSpeed = originalCharacter.GetAnimator().GetFloat(originalCharacter.moveSpeedParameter);
-                Debug.Log(moveSpeed + " is movespeed");
-                mirrorCharacter.GetAnimator().SetFloat(mirrorCharacter.moveSpeedParameter, moveSpeed);
-
-                // Direction
-                int direction = originalCharacter.GetAnimator().GetInteger(originalCharacter.directionParameter);
-                int flippedDirection = FlipDirection(direction);
-                mirrorCharacter.GetAnimator().SetInteger(mirrorCharacter.directionParameter, flippedDirection);
-                */
-
                 yield return null;
             }
         }
-
-        /// <summary>
-        /// Provided by Chris using the Unity Sprites Custom / Not used in current implementation!
-        /// </summary>
-        /// <param name="direction"></param>
-        /// <returns></returns>
-        private int FlipDirection(int direction)
-        {
-            // 0 = Down, 1 = Left, 2 = Right, 3 = Up, 4 = DownLeft, 5 = DownRight, 6 = UpLeft, 7 = UpRight
-            switch (direction)
-            {
-                case 0:
-                    return 3;
-
-                case 1:
-                    return 2;
-
-                case 2:
-                    return 1;
-
-                case 3:
-                    return 0;
-
-                case 4:
-                    return 7;
-
-                case 5:
-                    return 6;
-
-                case 6:
-                    return 5;
-
-                case 7:
-                    return 4;
-
-                default:
-                    
-                    return direction;
-            }
-        }
-
+        
 
         private string GetAnimStateString()
         {
