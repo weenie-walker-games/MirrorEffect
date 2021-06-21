@@ -127,7 +127,7 @@ namespace WeenieWalker
         }
 
         /// <summary>
-        /// Provided by Chris using the Unity Sprites Custom
+        /// Provided by Chris using the Unity Sprites Custom / Not used in current implementation!
         /// </summary>
         /// <param name="direction"></param>
         /// <returns></returns>
@@ -161,6 +161,7 @@ namespace WeenieWalker
                     return 4;
 
                 default:
+                    
                     return direction;
             }
         }
