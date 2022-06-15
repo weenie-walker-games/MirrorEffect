@@ -134,17 +134,11 @@ namespace WeenieWalker
                 playerPos.y = mirrorRenderer.transform.position.y;
 
                 mirrorRenderer.transform.position = playerPos;
-                //Debug.Log(mirrorRenderer.transform.localPosition);
+
 
                 yield return null;
             }
         }
-
-        /// <summary>
-        /// Provided by Chris using the Unity Sprites Custom / Not used in current implementation!
-        /// </summary>
-        /// <param name="direction"></param>
-        /// <returns></returns>
 
         private string GetAnimStateString()
         {
@@ -210,8 +204,6 @@ namespace WeenieWalker
                 case "_DL":
                     returnDirection = "_UR";
                     break;
-
-
             }
 
             return returnDirection;
