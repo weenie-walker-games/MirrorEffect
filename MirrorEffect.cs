@@ -9,6 +9,7 @@ namespace WeenieWalker
     {
         //Store the player character that will be mirrored
         Char originalCharacter;
+        AC_2DFrameFlipping frameFlippingState;
 
         //Info about dummy character
         [Tooltip("The sprite slot for the dummy character")]
@@ -21,7 +22,6 @@ namespace WeenieWalker
         //Get the sprite renderer and animator off the player character
         SpriteRenderer characterToMirror;
         Animator characterAnimator;
-
 
         SpriteDirectionData directionData;
         Coroutine mirrorRoutine;
@@ -49,7 +49,7 @@ namespace WeenieWalker
                 characterToMirror = originalCharacter.GetComponentInChildren<SpriteRenderer>();
                 characterAnimator = originalCharacter.GetAnimator();
                 mirrorAnimator.runtimeAnimatorController = characterAnimator.runtimeAnimatorController;
-                directionData = originalCharacter.spriteDirectionData;
+                frameFlippingState = originalCharacter.frameFlipping;
 
                 //Turn on the mirror effect and start the coroutine that updates as the player moves
                 mirrorRenderer.enabled = true;
@@ -64,10 +64,10 @@ namespace WeenieWalker
             if (collision.gameObject.CompareTag("Player"))
             {
                 //Reset everything
+                frameFlippingState = AC_2DFrameFlipping.None;
                 characterToMirror = null;
                 characterAnimator = null;
                 mirrorAnimator.runtimeAnimatorController = null;
-                directionData = null;
                 mirrorRenderer.enabled = false;
                 originalCharacter = null;
                 isMirroring = false;
@@ -81,12 +81,43 @@ namespace WeenieWalker
             {
                 //Get Animation and Sprite data
                 CharState charState = originalCharacter.charState;
-                string currentDirection = originalCharacter.GetSpriteDirection();
-                string newDirection = ReturnReverse();
+                string currentDirection = originalCharacter.GetSpriteDirection(true);
+                string newDirection = ReturnReverse(currentDirection);
                 string newState = GetAnimStateString();
 
                 //Assign the animation to the mirror
-                mirrorAnimator.Play(newState + newDirection);
+                if (frameFlippingState == AC_2DFrameFlipping.LeftMirrorsRight)
+                {
+                    if (newDirection.Contains("L"))
+                    {
+                        mirrorRenderer.flipX = true;
+                        mirrorAnimator.Play(newState + newDirection.Replace("L", "R"));
+                    }
+                    else
+                    {
+                        mirrorRenderer.flipX = false;
+                        mirrorAnimator.Play(newState + newDirection);
+                    }
+                }
+
+                if (frameFlippingState == AC_2DFrameFlipping.RightMirrorsLeft)
+                {
+                    if (newDirection.Contains("R"))
+                    {
+                        mirrorRenderer.flipX = true;
+                        mirrorAnimator.Play(newState + newDirection.Replace("R", "L"));
+                    }
+                    else
+                    {
+                        mirrorRenderer.flipX = false;
+                        mirrorAnimator.Play(newState + newDirection);
+                    }
+                }
+                
+                if (frameFlippingState == AC_2DFrameFlipping.None)
+                {
+                    mirrorAnimator.Play(newState + newDirection);
+                }
 
 
                 //Adjust scale for the mirror image, flipping for left/right
@@ -96,31 +127,14 @@ namespace WeenieWalker
                 if (newDirection == "_R" || newDirection == "_L" || newDirection == "_UR" || newDirection == "_UL"|| newDirection == "_DR" || newDirection == "_DL")
                     newScale.x *= -1f;
 
-                mirrorRenderer.transform.localScale = newScale;
-
+               mirrorRenderer.transform.localScale = newScale;
 
                 //Get player location and adjust the mirror reflection
-                Vector2 playerPos = originalCharacter.transform.position;
+                Vector3 playerPos = originalCharacter.transform.position;
                 playerPos.y = mirrorRenderer.transform.position.y;
 
                 mirrorRenderer.transform.position = playerPos;
-
-
-                /*Provided by Chris using Unity Sprites Custom but was not working properly
-                
-                // Position
-                mirrorCharacter.Teleport(originalCharacter.transform.position + (Vector3)positionOffset);
-
-                // Move speed
-                float moveSpeed = originalCharacter.GetAnimator().GetFloat(originalCharacter.moveSpeedParameter);
-                Debug.Log(moveSpeed + " is movespeed");
-                mirrorCharacter.GetAnimator().SetFloat(mirrorCharacter.moveSpeedParameter, moveSpeed);
-
-                // Direction
-                int direction = originalCharacter.GetAnimator().GetInteger(originalCharacter.directionParameter);
-                int flippedDirection = FlipDirection(direction);
-                mirrorCharacter.GetAnimator().SetInteger(mirrorCharacter.directionParameter, flippedDirection);
-                */
+                //Debug.Log(mirrorRenderer.transform.localPosition);
 
                 yield return null;
             }
@@ -131,41 +145,6 @@ namespace WeenieWalker
         /// </summary>
         /// <param name="direction"></param>
         /// <returns></returns>
-        private int FlipDirection(int direction)
-        {
-            // 0 = Down, 1 = Left, 2 = Right, 3 = Up, 4 = DownLeft, 5 = DownRight, 6 = UpLeft, 7 = UpRight
-            switch (direction)
-            {
-                case 0:
-                    return 3;
-
-                case 1:
-                    return 2;
-
-                case 2:
-                    return 1;
-
-                case 3:
-                    return 0;
-
-                case 4:
-                    return 7;
-
-                case 5:
-                    return 6;
-
-                case 6:
-                    return 5;
-
-                case 7:
-                    return 4;
-
-                default:
-                    
-                    return direction;
-            }
-        }
-
 
         private string GetAnimStateString()
         {
@@ -199,9 +178,9 @@ namespace WeenieWalker
             return returnString;
         }
 
-        private string ReturnReverse()
+        private string ReturnReverse(string direction)
         {
-            string current = originalCharacter.GetSpriteDirection();
+            string current = direction;
 
             string returnDirection = "_D";
 
